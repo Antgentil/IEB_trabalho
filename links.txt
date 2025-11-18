@@ -1,0 +1,29 @@
+A nossa variável dependente: Taxa de desemprego
+Seguida de pelo menos 4 variáveis independentes.
+
+
+
+Taxa de desemprego (Série 2021 - %) por Local de residência (NUTS - 2024) e Sexo; Trimestral - INE, Inquérito ao emprego (Série - 2021)
+
+https://www.ine.pt/xportal/xmain?xpid=INE&xpgid=ine_indicadores&contecto=pi&indOcorrCod=0012136&selTab=tab0
+---------------------------
+
+Produto interno bruto dados encadeados em volume (B.1*g) (Base 2021 - €); Trimestral - INE, Contas nacionais trimestrais
+
+https://www.ine.pt/xportal/xmain?xpid=INE&xpgid=ine_indicadores&indOcorrCod=0013430&contexto=bd&selTab=tab2
+---------------------------
+
+Rendimento médio mensal líquido (Série 2021 - €) da população empregada por conta de outrem por Local de residência (NUTS - 2024) e Setor de atividade económica (CAE Rev. 3); Trimestral - INE, Inquérito ao emprego (Série - 2021)
+
+https://www.ine.pt/xportal/xmain?xpid=INE&xpgid=ine_indicadores&indOcorrCod=0012134&contexto=bd&selTab=tab2
+---------------------------
+
+Proporção de população empregada no setor terciário (Série 2021, CAE Rev. 3 - %) por Local de residência (NUTS - 2024); Anual - INE, Inquérito ao emprego (Séries - 2021)
+
+https://www.ine.pt/xportal/xmain?xpid=INE&xpgid=ine_indicadores&indOcorrCod=0012206&contexto=bd&selTab=tab2
+---------------------------
+
+População ativa com idade entre 16 e 74 anos (N.º) por Grupo etário; Mensal - INE, Estatísticas Mensais de Emprego e Desemprego com base no Inquérito ao Emprego
+
+https://www.ine.pt/xportal/xmain?xpid=INE&xpgid=ine_indicadores&indOcorrCod=0010057&contexto=bd&selTab=tab2
+---------------------------
