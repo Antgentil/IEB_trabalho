@@ -7,11 +7,12 @@ dados <- read_excel("Base_Dados_Final.xlsx")
 na.fail(dados)
 
 # converter character para numerico
-dados$`Rendimento_medio_liquido (euros)` <- as.numeric(dados$`Rendimento_medio_liquido (euros)`)
+dados$Rendimento_medio_liquido <- as.numeric(dados$Rendimento_medio_liquido)
 dados$Taxa_Desemprego <- as.numeric(dados$Taxa_Desemprego)
-dados$Ano <- as.numeric(sub(".* de (\\d{4})", "\\1", dados$`Período de referência dos dados`))
-dados$Trim <- as.numeric(substr(dados$`Período de referência dos dados`, 1, 1))
+dados$Ano <- as.numeric(sub(".* de (\\d{4})", "\\1", dados$Período))
+dados$Trim <- as.numeric(substr(dados$Período, 1, 1))
 
+dados$Período
 
 # ver as primeiras linhas da base de dados para confirmar que ficou tudo correto
 head(dados)
@@ -23,22 +24,18 @@ str(dados)
 # Regressao linear classica (lm()), que serve para diagnostico preliminar.
 # --------------------------------------------------------------------------
 
-
-# criar uma coluna com ano e trimestre em formato reconhecido pelo R
-install.packages("lubridate")
 library(lubridate)
 
 
 str(dados)
 
 modelo1 <- lm(Taxa_Desemprego ~ PIB_real + Proporção_15_24 +
-                Emprego_Terciario + `Rendimento_medio_liquido (euros)`,
+                Emprego_Terciario + Rendimento_medio_liquido,
               data = dados)
 
 summary(modelo1)
 
 plot(modelo1)
-
 
 
 # --------------------------------------------------------------------------
@@ -49,7 +46,7 @@ library(rstanarm)
 
 
 modelo_bayes <- stan_glm(
-  Taxa_Desemprego ~ PIB_real + Proporção_15_24 + Emprego_Terciario + `Rendimento_medio_liquido (euros)`,
+  Taxa_Desemprego ~ PIB_real + Proporção_15_24 + Emprego_Terciario + Rendimento_medio_liquido,
   data = dados,
   family = gaussian(),
   prior = normal(0, 10),             # prior para os betas
@@ -87,17 +84,19 @@ mcmc_neff(neff_ratio(modelo_bayes))       # tamanho efetivo das amostras
 
 #previsoes
 previsoes <- posterior_predict(modelo_bayes, dados) #cada coluna contem previsoes de um semestre
-# Construct a 95% posterior credible interval
-posterior_interval(previsoes, prob = 0.95)
-
 
 prediction_mean <- apply(previsoes, 2, mean)        # previsoes pontuais
 apply(previsoes, 2, quantile, c(0.025, 0.975))       # intervalo credível
 
-prediction_mean - dados$Taxa_Desemprego
+plot(prediction_mean, type = "b", col = "blue", pch = 16,
+     xlab = "Trimestre", ylab = "Percentagem %", main = "Comparação de Original vs previsão ") 
+lines(dados$Taxa_Desemprego, type = "b", col = "red", pch = 17)  
+legend("topright", legend = c("Previsão Bayes", "Dados desemprego"), 
+         col = c("blue", "red"), lty = 1, pch = c(16, 17))
+
 var(prediction_mean - dados$Taxa_Desemprego)
 
-?posterior_predict
+
 
 
 

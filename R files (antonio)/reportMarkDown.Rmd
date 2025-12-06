@@ -120,7 +120,7 @@ Estas séries permitem observar como cada indicador evoluiu ao longo do período
 
 ##### **Variável "PIB_real":**
 
-```{r fig1, echo=FALSE, fig.cap="Série Temporal do PIB Real"}}
+```{r fig1, echo=FALSE, fig.cap="Série Temporal do PIB Real"}
 # PIB Real ao longo do tempo
 ggplot(dados, aes(x = Trimestre, y = PIB_real)) +
   geom_line(color = "lightpink", size = 1) +
@@ -138,7 +138,7 @@ Esta série mostra claramente a sensibilidade da economia portuguesa aos ciclos 
 
 ##### **Variável "Proporção_15_24":**
 
-```{r fig2, echo=FALSE, fig.cap="Série Temporal da Proporção da População entre 15-24 Anos"}}
+```{r fig2, echo=FALSE, fig.cap="Série Temporal da Proporção da População entre 15-24 Anos"}
 # Proporção da população 15-24 anos
 ggplot(dados, aes(x = Trimestre, y = Proporção_15_24)) +
   geom_line(color = "lightgreen", size = 1) +
@@ -154,7 +154,7 @@ Este padrão é consistente com fenómenos demográficos como o envelhecimento p
 
 ###### **Variável "Emprego_Terciario":**
 
-```{r fig3, echo=FALSE, fig.cap="Série Temporal do Emprego no Setor Terciário"}}
+```{r fig3, echo=FALSE, fig.cap="Série Temporal do Emprego no Setor Terciário"}
 # Emprego no setor terciário
 ggplot(dados, aes(x = Trimestre, y = Emprego_Terciario)) +
   geom_line(color = "lightblue", size = 1) +
@@ -171,7 +171,7 @@ Este comportamento reflete a crescente importância dos serviços — como turis
 
 ##### **Variável "Rendimento_medio_liquido":**
 
-```{r fig4, echo=FALSE, fig.cap="Série Temporal do Rendimento Médio Líquido"}}
+```{r fig4, echo=FALSE, fig.cap="Série Temporal do Rendimento Médio Líquido"}
 # Rendimento médio líquido
 ggplot(dados, aes(x = Trimestre, y = Rendimento_medio_liquido)) +
   geom_line(color = "violet", size = 1) +
@@ -188,7 +188,7 @@ Este aumento pode refletir fatores como melhoria salarial gradual, políticas de
 
 #### Evolução da Variável Dependente: Taxa de Desemprego
 
-```{r fig5, echo=FALSE, fig.cap="Série Temporal da Taxa de Desemprego"}}
+```{r fig5, echo=FALSE, fig.cap="Série Temporal da Taxa de Desemprego"}
 # Taxa de desemprego
 ggplot(dados, aes(x = Trimestre, y = Taxa_Desemprego)) +
   geom_line(color = "pink", size = 1) +
@@ -197,6 +197,7 @@ ggplot(dados, aes(x = Trimestre, y = Taxa_Desemprego)) +
   theme_minimal()
 
 ```
+
 O gráfico da taxa de desemprego mostra uma trajetória muito clara, composta por três momentos principais:
 
 ##### 1. Subida significativa (2011–2013):
@@ -219,7 +220,7 @@ Este comportamento destaca a resiliência do mercado de trabalho português no p
 
 A matriz de correlação permite observar a direção e a intensidade das relações lineares entre a taxa de desemprego e cada uma das variáveis explicativas. Embora a correlação não estabeleça causalidade, fornece uma primeira indicação sobre quais variáveis podem ter maior influência na evolução do desemprego e sobre a coerência das relações observadas nos gráficos temporais.
 
-```{r fig6, echo=FALSE, fig.cap="Gráfico de Correlação"}}
+```{r fig6, echo=FALSE, fig.cap="Gráfico de Correlação"}
 
 # Correlação simples
 cor(dados %>% select(-Período, -Trimestre))
@@ -339,17 +340,13 @@ modelo_bayes <- stan_glm(Taxa_Desemprego ~ PIB_real + Proporção_15_24 + Empreg
 
 ```
 
-## Avaliação modelo
+### Avaliação modelo
 
-Link abaixo indica valores ideais para Rhat e neff ratio, para utilizar em fontes
-https://search.r-project.org/CRAN/refmans/bayesplot/html/MCMC-diagnostics.html
 
 Utilizamos a medida Rhat para comparar as 4 cadeias simuladas por stan_glm.
 
 ```{r}
-rhat(modelo_bayes)
-
-mcmc_rhat(rhat(modelo_bayes))
+mcmc_rhat(bayesplot::rhat(modelo_bayes))
 ```
 
 
@@ -359,21 +356,32 @@ Os valores obtidos encontram-se abaixo de 1.05, indicando semelhança forte nas 
 Utiliza-se também o diagnóstico neff ratio para mcmc.
 
 ```{r}
-neff_ratio(modelo_bayes)
 
 mcmc_neff(neff_ratio(modelo_bayes)) 
 ```
 
-Neste caso também vemos linhas azuis em todos os valores, indicando um bom rácio do tamanho de
-amostras efetivas.
+Neste caso também vemos linhas azuis em todos os valores (maior que 0.5), 
+indicando um bom rácio do tamanho de amostras efetivas.
 
 ## Previsões
 
-dados %>% 
-  filter(date == "2012-10-22") %>% 
-  select(Trimestre, dados)
-  temp_feel rides
+Com o nosso modelo avaliado, tentamos prever o desemprego com a media dos nossos
+posterioris. A imagem abaixo demonstra a diferença entre os valores previstos e 
+os valores originais dos dados.
 
+```{r}
+previsoes <- posterior_predict(modelo_bayes, dados) #cada coluna contem previsoes de um semestre
+
+prediction_mean <- apply(previsoes, 2, mean)        # previsoes pontuais
+
+#apply(previsoes, 2, quantile, c(0.025, 0.975))       # intervalo credível
+
+plot(prediction_mean, type = "b", col = "blue", pch = 16,
+     xlab = "Trimester", ylab = "Percentagem %", main = "Comparação de Original vs previsão") 
+lines(dados$Taxa_Desemprego, type = "b", col = "red", pch = 17)  
+legend("topright", legend = c("Previsão Bayes", "Dados desemprego"), 
+         col = c("blue", "red"), lty = 1, pch = c(16, 17))
+```
 
 
 ## Conclusão
