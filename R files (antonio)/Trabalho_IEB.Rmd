@@ -16,6 +16,7 @@ header-includes:
   - \hypersetup{linktoc=all}
   - \setcounter{tocdepth}{2}
   - \setcounter{secnumdepth}{2}
+  - \usepackage{amsmath}
 editor_options: 
   markdown: 
     wrap: sentence
@@ -162,10 +163,29 @@ Antes da construção do modelo estatístico, é essencial realizar uma análise
 
 Nesta secção, a análise exploratória foca-se na evolução temporal da taxa de desemprego e das variáveis explicativas selecionadas, examinando tendências gerais, picos ou quebras associados a instabilidades económicas, bem como relações simples entre variáveis, através de correlações e gráficos, fornecendo uma primeira visão das associações que serão estudadas formalmente no modelo bayesiano.
 
-```{r}
+```{r, echo=FALSE}
 library(fBasics)
-basicStats(dados %>% select(-Período, -Trimestre))
+
+# Estatísticas descritivas completas
+stats <- basicStats(dados %>% select(-Período, -Trimestre))
+
+# Ficar só com o essencial para caber bem na página
+stats_sel <- stats[c("nobs", "Mean", "Stdev", "Minimum", "Maximum"), ]
+
+# Transpor: variáveis em linhas, estatísticas em colunas
+stats_t <- t(round(stats_sel, 2))
+
+knitr::kable(
+  stats_t,
+  caption = "Estatísticas descritivas principais das variáveis",
+  col.names = c("n", "Média", "Desvio-padrão", "Mínimo", "Máximo"),
+  digits = 2,
+  align = "lrrrr"
+)
 ```
+
+
+
 
 ## Séries temporais de Cada Variável
 
@@ -320,16 +340,24 @@ Este tipo de modelo permite quantificar o efeito médio de cada variável explic
 
 No nosso caso, especificou-se o seguinte modelo:
 
-$$
-Taxa\_Desemprego_t = \beta_0 + \beta_1(PIB\_Real_t) + \beta_2(Proporção\_15\_24_t) + \beta_3(Emprego\_Terciário_t)\\ 
-+ \beta_4(Rendimento\_Médio\_Líquido_t) + \varepsilon_t
-$$
+\[
+\begin{aligned}
+Taxa\_Desemprego_t
+&= \beta_0 
+   + \beta_1\, PIB\_Real_t
+   + \beta_2\, Proporcao\_{15\_24,t} \\
+&\quad + \beta_3\, Emprego\_Terciario_t
+   + \beta_4\, Rendimento\_Medio\_Liquido_t
+   + \varepsilon_t
+\end{aligned}
+\]
 
-,onde
+onde:
 
--   $\beta_0$ representa o intercepto,
--   $\beta_i$representam os efeitos das variáveis explicativas,
--   \$ \varepsilon\_t \sim N(0,\sigma))\$ representa o erro aleatório.
+- $\beta_0$ representa o intercepto;
+- $\beta_i$ representam os efeitos das variáveis explicativas;
+- $\varepsilon_t \sim N(0,\sigma^2)$ representa o erro aleatório.
+
 
 Uma etapa crucial consiste em determinar a distribuição adequada para modelar esta variável.
 Apesar de a taxa de desemprego ser uma proporção, observamos que os valores trimestrais apresentam comportamento contínuo e relativamente simétrico, sem se aproximarem de 0% ou 100%.
@@ -338,12 +366,13 @@ Essas características tornam a distribuição Normal uma escolha apropriada, po
 
 Portanto, assumimos que:
 
-$$
-Taxa\_Desemprego_t|\beta, \mu,\sigma \sim N(\mu,\sigma^2)
-$$
+\[
+Taxa\_Desemprego_t \mid \beta, \mu, \sigma \sim N(\mu, \sigma^2)
+\]
 
-,onde \$\mu \$representa a média da taxa de desemprego e \$\sigma\^2 \$ a sua variância.
+onde $\mu$ representa a média da taxa de desemprego e $\sigma^2$ a sua variância.
 Esta suposição permite-nos aplicar modelos de regressão clássicos e realizar inferência estatística de forma consistente e interpretável.
+
 
 ## Especificação das Prioris
 
@@ -377,21 +406,26 @@ prioris <- c(
 
 ## Ajuste do Modelo
 
-Após a especificação do modelo e a definição das prioris para os parâmetros, o próximo passo é realizar a inferência estatística, ou seja, ajustar o modelo através da amostragem MCMC.
-O código R utiliza a função <code>stan_glm</code> do pacote <code>rstanarm</code>, que usa o motor de inferência Stan para realizar esta amostragem.
+Após a especificação do modelo e a definição das prioris para os parâmetros, 
+o próximo passo é realizar a inferência estatística, ou seja, ajustar o modelo 
+através da amostragem MCMC. O código R utiliza a função `stan_glm` do pacote 
+`rstanarm`, que usa o motor de inferência Stan para realizar esta amostragem.
 
-```{r results='hide'}
+```{r ajuste_modelo, echo=FALSE, message=FALSE, warning=FALSE}
 library(rstanarm)
 modelo_bayes <- readRDS("modelo_bayes.rds")
 ```
 
-```{r}
-summary(modelo_bayes)
-```
 
-```{r}
-first_set <- head(modelo_bayes, 1)
-first_set
+```{r resumo_pequeno, echo=FALSE}
+library(broom.mixed)
+resumo_fixos <- tidy(modelo_bayes, effects = "fixed", conf.int = TRUE)
+knitr::kable(
+  resumo_fixos[, c("term","estimate","conf.low","conf.high")],
+  digits = 3,
+  caption = "Parâmetros do modelo bayesiano (efeitos fixos)."
+)
+
 ```
 
 # Diagnóstico de Convergência (R-hat e ESS)
@@ -417,6 +451,7 @@ mcmc_neff(neff_ratio(modelo_bayes))
 
 O nosso rácio eficaz de amostras (neff_ratio) é satisfatório para todos os parâmetros, indicando que obtivemos um número suficiente de amostras não correlacionadas para estimar as médias a posteriori de forma fiável.
 
+
 # Posteriori
 
 Após ajustar o modelo bayesiano, procedemos à estimação dos parâmetros via MCMC.
@@ -430,9 +465,18 @@ tidy(modelo_bayes, effects = c("fixed", "aux"), conf.int = TRUE)
 
 Esta análise conecta o modelo teórico previamente especificado com os valores observados nos dados, oferecendo uma interpretação quantitativa das relações económicas estudadas:
 
-\$\$
+\[
+\begin{aligned}
+\widehat{Desemprego}_t
+&= 108.6091
+ - 4.768032\times 10^{-4}\, PIBReal_t \\
+&\quad + 4.005751\times 10^{-2}\, Proporcao_{15\_24,t} \\
+&\quad - 9.562027\times 10^{-1}\, EmpregoTerciario_t \\
+&\quad - 5.296195\times 10^{-3}\, RendimentoMedioLiquido_t
+\end{aligned}
+\]
 
-(1.086091e+02) - (4.768032e-04)(PIB_Real_t) + (4.005751e-02)(Proporção_15_24_t) + (-9.562027e-01)(Emprego_Terciário_t)\\ - (5.296195e-03)(Rendimento_Médio_Líquido_t) \$\$
+
 
 A mediana posterior dos coeficientes sugere que o emprego no setor terciário exerce um efeito negativo consistente sobre a taxa de desemprego, ou seja, um aumento relativo no emprego terciário está associado a uma redução da taxa de desemprego.
 Por outro lado, o PIB real e o rendimento médio líquido apresentam coeficientes próximos de zero, indicando pouca influência direta trimestral sobre o desemprego.
@@ -466,13 +510,18 @@ plot(prediction_mean, type = "b", col = "pink", pch = 20,
 O gráfico comparativo entre os valores previstos e os dados observados permite avaliar visualmente o ajuste do modelo.
 Observa-se que o modelo consegue reproduzir bem o padrão temporal da taxa de desemprego, embora pequenas discrepâncias possam surgir em períodos de maior volatilidade ou choques econômicos não capturados pelos regressores.
 
-\newpage
+\clearpage
 
 # Conclusões
 
-todo
+O objetivo deste trabalho foi aplicar a abordagem bayesiana ao estudo da taxa de desemprego em Portugal entre 2011 e 2024, utilizando dados trimestrais provenientes do INE/PORDATA. A análise exploratória identificou três fases distintas na evolução da taxa de desemprego: um aumento pronunciado durante o período de crise económica, seguido de uma redução contínua a partir de 2013 e de uma relativa estabilização após o choque associado à pandemia de COVID-19.
 
-\newpage
+O modelo de regressão linear múltipla bayesiana permitiu quantificar a influência dos principais fatores socioeconómicos considerados. Os resultados sugerem que a estrutura setorial do emprego desempenha um papel determinante: aumentos na proporção de emprego no setor terciário associam-se a reduções significativas na taxa de desemprego ao longo do período analisado. Em contraste, o PIB real e o rendimento médio líquido apresentam efeitos estimados de baixa magnitude quando incluídos simultaneamente no modelo, indicando que o seu impacto trimestral direto sobre o desemprego é limitado no horizonte estudado. A proporção de jovens na população ativa mostra um efeito positivo reduzido, compatível com a maior vulnerabilidade deste grupo etário às flutuações do mercado laboral.
+
+As previsões obtidas a partir do modelo reproduzem adequadamente o comportamento observado da taxa de desemprego, captando a sua trajetória global e refletindo as principais mudanças no ciclo económico. Persistem, contudo, limitações inerentes ao enquadramento adotado: a relação entre variáveis é assumida linear, a dependência temporal não é modelada explicitamente e fatores como políticas públicas, choques externos adicionais ou alterações estruturais profundas não são incorporados.
+
+Apesar destas restrições, os resultados evidenciam a utilidade da inferência bayesiana na análise de fenómenos económicos reais, permitindo integrar informação prévia, quantificar incerteza e interpretar estimativas de forma probabilística. O enquadramento desenvolvido constitui uma base sólida para extensões futuras, nomeadamente através da inclusão de modelos dinâmicos, especificações não lineares ou novas variáveis explicativas que aprofundem a compreensão das dinâmicas do mercado de trabalho português.
+
 
 # Referências
 

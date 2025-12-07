@@ -35,3 +35,5 @@ modelo_bayes <- stan_glm(
 
 # ---- Guardar o modelo para usar no Rmd ----
 saveRDS(modelo_bayes, "modelo_bayes.rds")
+
+
