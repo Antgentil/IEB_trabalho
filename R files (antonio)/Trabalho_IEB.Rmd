@@ -1,20 +1,59 @@
 ---
-title: '**INSTITUTO SUPERIOR DE ENGENHARIA DE LISBOA**'
-author: "Docente - Paula Cristina Pires Simões \n\\vspace{0.5cm}  \n-  Marta Pires
-  Nº51726 \n- Daiana Lapaiescu Nº48668\n- Eduardo Tavares Nº 49454  \n- António Pimentel
-  Nº42146  \n"
-date: "2025-06-12"
+title: ""
+author: ""
+date: ""
 output:
   pdf_document:
     latex_engine: xelatex
+    number_sections: true     # numera as secções
   html_document:
     df_print: paged
-subtitle: "\\large \\textbf{Departamento de Matemática}  \n\\large \\textbf{Relatório
-  para a Unidade Curricular de Introdução à Estatística Bayesiana dos cursos de LMATE
-  e LEIC}\n\n\\vspace{1cm}\n\n\\LARGE \\textbf{População e Emprego}\n"
-header-includes: \setcounter{page}{0}
+    toc: true                 # índice só no HTML
+    toc_depth: 2
+    number_sections: true
+header-includes:
+  - \usepackage[hidelinks]{hyperref}   # links clicáveis sem caixas coloridas
+  - \hypersetup{linktoc=all}          # torna todo o texto do índice clicável
 ---
+\begin{titlepage}
+\begin{center}
 
+{\Huge \textbf{INSTITUTO SUPERIOR DE ENGENHARIA DE LISBOA} \par}
+
+\vspace{0.8cm}
+
+{\large Departamento de Matemática \par}
+
+\vspace{1cm}
+
+{\LARGE \textbf{População e Emprego}\par}
+
+\vspace{2cm}
+
+\begin{tabular}{rl}
+Autores: & 51726 \quad Marta Pires\\
+         & 48668 \quad Daiana Lapaiescu\\
+         & 49454 \quad Eduardo Tavares\\
+         & 42146 \quad António Pimentel\\
+\end{tabular}
+
+\vspace{2cm}
+
+Relatório para a Unidade Curricular de Introdução à Estatística Bayesiana\\
+dos cursos de LMATE e LEIC
+
+\vspace{1.5cm}
+
+Professora: Paula Cristina Pires Simões
+
+\vfill
+
+09 - Dezembro - 2025
+
+\end{center}
+\end{titlepage}
+
+\tableofcontents
 \newpage
 
 ```{r, include=FALSE}
@@ -83,7 +122,7 @@ A taxa de desemprego responde rapidamente a alterações na atividade económica
 A seleção das variáveis independentes teve como objetivo incluir fatores que captam tanto a conjuntura económica do país como características estruturais do mercado de trabalho. Cada variável foi escolhida por representar um determinante plausível e frequentemente referido na literatura económica como influenciador do desemprego.
 
 - **PIB real (em milhões de euros, por trimestre):** O Produto Interno Bruto real é um indicador fundamental da atividade económica. Períodos de crescimento do PIB tendem a estar associados à criação de emprego, enquanto fases de contração económica aumentam o risco de desemprego. Assim, o PIB real foi incluído para captar o efeito da conjuntura macroeconómica sobre o mercado de trabalho ao longo do tempo.
-- **Remuneração média mensal bruta:** A remuneração média reflete simultaneamente o rendimento dos trabalhadores e os custos laborais enfrentados pelas empresas. Salários mais elevados podem indicar um mercado de trabalho mais dinâmico e competitivo, mas também podem representar maiores custos de contratação. A inclusão desta variável permite captar a forma como estas dinâmicas influenciam o nível de emprego e, consequentemente, o desemprego.
+- **Remuneração média mensal líquida:** A remuneração média mensal líquida reflete o rendimento efetivo recebido pelos trabalhadores após dedução das contribuições obrigatórias, constituindo um indicador direto do poder de compra da população empregada. Variações nesta variável podem influenciar a dinâmica do mercado de trabalho, uma vez que aumentos salariais elevam o rendimento disponível das famílias e podem estimular a procura agregada. Simultaneamente, remunerações mais elevadas podem sinalizar condições económicas favoráveis e maior competitividade no mercado laboral, estando frequentemente associadas a menores níveis de desemprego.
 - **Percentagem de emprego no setor terciário:** O setor terciário representa a maior parte da estrutura económica portuguesa, abrangendo atividades como comércio, turismo e serviços. Alterações no peso relativo deste setor podem influenciar o desemprego devido à sua maior sensibilidade a flutuações económicas e choques externos. Esta variável permite captar possíveis mudanças estruturais na distribuição do emprego entre setores e o seu impacto no mercado de trabalho.
 - **Proporção de jovens na população ativa:** A presença de trabalhadores mais jovens na força de trabalho é relevante para a dinâmica do desemprego, uma vez que este grupo apresenta maior rotatividade, maior taxa de entrada no mercado de trabalho e maior vulnerabilidade a ciclos económicos. Assim, a proporção de jovens (15–24 anos) na população ativa foi incluída para medir o impacto da composição etária da força laboral sobre a evolução do desemprego.
 
@@ -382,6 +421,38 @@ plot(prediction_mean, type = "b", col = "pink", pch = 20,
 
 O gráfico comparativo entre os valores previstos e os dados observados permite avaliar visualmente o ajuste do modelo. Observa-se que o modelo consegue reproduzir bem o padrão temporal da taxa de desemprego, embora pequenas discrepâncias possam surgir em períodos de maior volatilidade ou choques econômicos não capturados pelos regressores.
 
-## Conclusão
+\newpage
 
-escrever
+## Conclusões
+
+todo
+
+\newpage
+
+## Referências
+
+**INE – Taxa de desemprego**  
+[1] Instituto Nacional de Estatística (INE), *Taxa de desemprego (Série 2021 - %) por Local de residência (NUTS - 2024) e Sexo; Trimestral – Inquérito ao Emprego (Série 2021)*,  
+https://www.ine.pt/xportal/xmain?xpid=INE&xpgid=ine_indicadores&contecto=pi&indOcorrCod=0012136&selTab=tab0 (acesso em 07-dez-2025)
+
+**INE – Produto Interno Bruto real**  
+[2] Instituto Nacional de Estatística (INE), *Produto interno bruto dados encadeados em volume (B.1\*g) (Base 2021 - €); Trimestral – Contas nacionais trimestrais*,  
+https://www.ine.pt/xportal/xmain?xpid=INE&xpgid=ine_indicadores&indOcorrCod=0013430&contexto=bd&selTab=tab2 (acesso em 07-dez-2025)
+
+**INE – Rendimento médio mensal líquido** 
+[3] Instituto Nacional de Estatística (INE), *Rendimento médio mensal líquido (Série 2021 - €) da população empregada por conta de outrem por Local de residência (NUTS - 2024) e Setor de atividade económica (CAE Rev. 3); Trimestral – Inquérito ao Emprego (Série 2021)*,  
+https://www.ine.pt/xportal/xmain?xpid=INE&xpgid=ine_indicadores&indOcorrCod=0012134&contexto=bd&selTab=tab2 (acesso em 07-dez-2025)
+
+**INE – Emprego no setor terciário** 
+[4] Instituto Nacional de Estatística (INE), *Proporção de população empregada no setor terciário (Série 2021, CAE Rev. 3 - %) por Local de residência (NUTS - 2024); Anual – Inquérito ao Emprego (Série 2021)*,  
+https://www.ine.pt/xportal/xmain?xpid=INE&xpgid=ine_indicadores&indOcorrCod=0012206&contexto=bd&selTab=tab2 (acesso em 07-dez-2025)
+
+**INE – População ativa por grupos etários** 
+[5] Instituto Nacional de Estatística (INE), *População ativa com idade entre 16 e 74 anos (N.º) por Grupo etário; Mensal – Estatísticas Mensais de Emprego e Desemprego com base no Inquérito ao Emprego*,  
+https://www.ine.pt/xportal/xmain?xpid=INE&xpgid=ine_indicadores&indOcorrCod=0010057&contexto=bd&selTab=tab2 (acesso em 07-dez-2025)
+
+
+
+
+
+
