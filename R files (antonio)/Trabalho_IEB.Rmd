@@ -137,6 +137,8 @@ head(dados)
 na.fail(dados) #se correr é porque não há valores omissos
 ```
 
+A recolha foi inicialmente planeada para o período 2010–2024. Contudo, verificou-se a inexistência de séries trimestrais completas para algumas das variáveis independentes selecionadas, nomeadamente para o início do período. Face a esta limitação, o intervalo temporal foi restringido a 2011–2024, assegurando a disponibilidade integral e comparável de todos os indicadores utilizados no modelo.
+
 # Descrição dos Dados
 
 ## Variável dependente - Taxa de desemprego
@@ -156,6 +158,8 @@ Cada variável foi escolhida por representar um determinante plausível e freque
 -   **Remuneração média mensal líquida:** A remuneração média mensal líquida reflete o rendimento efetivo recebido pelos trabalhadores após dedução das contribuições obrigatórias, constituindo um indicador direto do poder de compra da população empregada. Variações nesta variável podem influenciar a dinâmica do mercado de trabalho, uma vez que aumentos salariais elevam o rendimento disponível das famílias e podem estimular a procura agregada. Simultaneamente, remunerações mais elevadas podem sinalizar condições económicas favoráveis e maior competitividade no mercado laboral, estando frequentemente associadas a menores níveis de desemprego.
 -   **Percentagem de emprego no setor terciário:** O setor terciário representa a maior parte da estrutura económica portuguesa, abrangendo atividades como comércio, turismo e serviços. Alterações no peso relativo deste setor podem influenciar o desemprego devido à sua maior sensibilidade a flutuações económicas e choques externos. Esta variável permite captar possíveis mudanças estruturais na distribuição do emprego entre setores e o seu impacto no mercado de trabalho.
 -   **Proporção de jovens na população ativa:** A presença de trabalhadores mais jovens na força de trabalho é relevante para a dinâmica do desemprego, uma vez que este grupo apresenta maior rotatividade, maior taxa de entrada no mercado de trabalho e maior vulnerabilidade a ciclos económicos. Assim, a proporção de jovens (15–24 anos) na população ativa foi incluída para medir o impacto da composição etária da força laboral sobre a evolução do desemprego.
+
+
 
 # Análise Exploratória dos Dados
 
