@@ -6,6 +6,7 @@ documentclass: article
 output:
   pdf_document:
     latex_engine: xelatex
+    fig_crop: false
   html_document:
     df_print: paged
     toc: true
@@ -17,6 +18,8 @@ header-includes:
   - \setcounter{tocdepth}{2}
   - \setcounter{secnumdepth}{2}
   - \usepackage{amsmath}
+  - \usepackage{fvextra}
+  - \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,breakanywhere,commandchars=\\\{\}}
 editor_options: 
   markdown: 
     wrap: sentence
@@ -63,7 +66,11 @@ Professora: Paula Cristina Pires Simões
 \newpage
 
 ```{r, include=FALSE}
-options(tinytex.verbose = TRUE)
+options(
+  tinytex.verbose = TRUE,
+  width = 60
+)
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 ```
 
 ```{r include=FALSE}
@@ -493,6 +500,8 @@ Estas estatísticas permitem interpretar de forma mais robusta os efeitos médio
 Com os parâmetros estimados pelo modelo bayesiano, é possível gerar previsões da taxa de desemprego para os períodos observados, incorporando a incerteza das estimativas.
 Utilizando as amostras MCMC, calculamos tanto as previsões pontuais (média das amostras) quanto os intervalos de credibilidade a 95%, que indicam a faixa de valores mais prováveis para cada trimestre.
 
+
+
 ```{r}
 #Previsões pontuais (média das amostras MCMC)
 previsoes <- posterior_predict(modelo_bayes, dados) 
@@ -514,7 +523,7 @@ plot(prediction_mean, type = "b", col = "pink", pch = 20,
 O gráfico comparativo entre os valores previstos e os dados observados permite avaliar visualmente o ajuste do modelo.
 Observa-se que o modelo consegue reproduzir bem o padrão temporal da taxa de desemprego, embora pequenas discrepâncias possam surgir em períodos de maior volatilidade ou choques econômicos não capturados pelos regressores.
 
-\clearpage
+\vspace{2\baselineskip}
 
 # Conclusões
 
@@ -525,6 +534,9 @@ O modelo de regressão linear múltipla bayesiana permitiu quantificar a influê
 As previsões obtidas a partir do modelo reproduzem adequadamente o comportamento observado da taxa de desemprego, captando a sua trajetória global e refletindo as principais mudanças no ciclo económico. Persistem, contudo, limitações inerentes ao enquadramento adotado: a relação entre variáveis é assumida linear, a dependência temporal não é modelada explicitamente e fatores como políticas públicas, choques externos adicionais ou alterações estruturais profundas não são incorporados.
 
 Apesar destas restrições, os resultados evidenciam a utilidade da inferência bayesiana na análise de fenómenos económicos reais, permitindo integrar informação prévia, quantificar incerteza e interpretar estimativas de forma probabilística. O enquadramento desenvolvido constitui uma base sólida para extensões futuras, nomeadamente através da inclusão de modelos dinâmicos, especificações não lineares ou novas variáveis explicativas que aprofundem a compreensão das dinâmicas do mercado de trabalho português.
+
+
+\clearpage
 
 
 # Referências

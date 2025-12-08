@@ -1,26 +1,70 @@
 ---
-title: '**INSTITUTO SUPERIOR DE ENGENHARIA DE LISBOA**'
-author: "Docente - Paula Cristina Pires Simões \n\\vspace{0.5cm}  \n-  Marta Pires
-  Nº51726 \n- Daiana Lapaiescu Nº48668\n- Eduardo Tavares Nº 49454  \n- António Pimentel
-  Nº42146  \n"
-date: "2025-06-12"
+title: ""
+author: ""
+date: ""
+documentclass: article
 output:
   pdf_document:
     latex_engine: xelatex
   html_document:
     df_print: paged
-subtitle: "\\large \\textbf{Departamento de Matemática}  \n\\large \\textbf{Relatório
-  para a Unidade Curricular de Introdução à Estatística Bayesiana dos cursos de LMATE
-  e LEIC}\n\n\\vspace{1cm}\n\n\\LARGE \\textbf{População e Emprego}\n"
-header-includes: \setcounter{page}{0}
+    toc: true
+    toc_depth: 2
+    number_sections: true
+header-includes:
+  - \usepackage[hidelinks]{hyperref}
+  - \hypersetup{linktoc=all}
+  - \setcounter{tocdepth}{2}
+  - \setcounter{secnumdepth}{2}
+  - \usepackage{amsmath}
+editor_options: 
+  markdown: 
+    wrap: sentence
 ---
 
+\begin{titlepage}
+\begin{center}
+
+{\Huge \textbf{INSTITUTO SUPERIOR DE ENGENHARIA DE LISBOA} \par}
+
+\vspace{0.8cm}
+
+{\large Departamento de Matemática \par}
+
+\vspace{1cm}
+
+{\LARGE \textbf{População e Emprego}\par}
+
+\vspace{2cm}
+
+\begin{tabular}{rl}
+Autores: & 51726 \quad Marta Pires\\
+         & 48668 \quad Daiana Lapaiescu\\
+         & 49454 \quad Eduardo Tavares\\
+         & 42146 \quad António Pimentel\\
+\end{tabular}
+
+\vspace{2cm}
+
+Relatório para a Unidade Curricular de Introdução à Estatística Bayesiana\\
+dos cursos de LMATE e LEIC
+
+\vspace{1.5cm}
+
+Professora: Paula Cristina Pires Simões
+
+\vfill
+
+09 - Dezembro - 2025
+
+\end{center}
+\end{titlepage}
+\tableofcontents
 \newpage
 
 ```{r, include=FALSE}
 options(tinytex.verbose = TRUE)
 ```
-
 
 ```{r include=FALSE}
 #Biblioteca
@@ -43,31 +87,46 @@ library(janitor)
 library(broom.mixed)
 ```
 
+# Introdução
 
-### Introdução
+O desemprego constitui um dos indicadores mais importantes da situação económica e social de um país, refletindo de forma direta o dinamismo do mercado de trabalho, a capacidade produtiva da economia e o bem-estar das famílias.
+Em Portugal, entre 2011 e 2024, este indicador apresentou variações significativas associadas à crise económica e financeira, ao período de recuperação que se seguiu e ao impacto da pandemia de COVID-19.
+Estas oscilações tornam o estudo do desemprego particularmente relevante e atual.
 
-O desemprego constitui um dos indicadores mais importantes da situação económica e social de um país, refletindo de forma direta o dinamismo do mercado de trabalho, a capacidade produtiva da economia e o bem-estar das famílias. Em Portugal, entre 2011 e 2024, este indicador apresentou variações significativas associadas à crise económica e financeira, ao período de recuperação que se seguiu e ao impacto da pandemia de COVID-19. Estas oscilações tornam o estudo do desemprego particularmente relevante e atual.
+A escolha deste tema resulta precisamente da sua importância para compreender como fatores económicos e demográficos influenciam a evolução do mercado de trabalho.
+Variáveis como o PIB real, a estrutura etária da população ativa, a remuneração média e o peso do setor terciário desempenham papéis centrais na explicação das dinâmicas laborais e ajudam a contextualizar períodos de maior estabilidade ou vulnerabilidade económica.
 
-A escolha deste tema resulta precisamente da sua importância para compreender como fatores económicos e demográficos influenciam a evolução do mercado de trabalho. Variáveis como o PIB real, a estrutura etária da população ativa, a remuneração média e o peso do setor terciário desempenham papéis centrais na explicação das dinâmicas laborais e ajudam a contextualizar períodos de maior estabilidade ou vulnerabilidade económica.
+## Enquadramento do tema, relevância e objectivos
 
-Assim, este trabalho tem como objetivo analisar a evolução da taxa de desemprego em Portugal ao longo dos últimos anos e avaliar de que forma estes fatores contribuem para a sua variação. O estudo insere-se no âmbito da Unidade Curricular de Introdução à Estatística Bayesiana, aplicando os métodos aprendidos à investigação de um fenómeno real com impacto económico e social significativo.
+Este trabalho enquadra-se na unidade curricular de Introdução à Estatística Bayesiana, que tem como objetivo introduzir o paradigma bayesiano e a sua implementação computacional em R/R-Studio. A análise da taxa de desemprego em Portugal é usada como exemplo aplicado para ilustrar como a modelação bayesiana pode ser utilizada na interpretação de dados económicos e sociais reais.
+
+Neste contexto, os objectivos do trabalho são:
+- recolher e organizar dados trimestrais sobre emprego e desemprego em Portugal a partir do INE e da PORDATA;
+- realizar uma análise exploratória das principais variáveis em estudo;
+- definir e ajustar um modelo de regressão linear múltipla bayesiana;
+- especificar distribuições a priori e estimar os parâmetros via MCMC;
+- avaliar a convergência das cadeias e proceder à avaliação e selecção de modelos;
+- produzir previsões para a taxa de desemprego;
+- discutir a relevância económica e social dos resultados, destacando o impacto dos principais factores no mercado de trabalho português.
+
+
+
 
 \newpage
 
-### Recolha e Organização de Dados:
 
-O primeiro passo consiste em recolher dados oficiais sobre a taxa de desemprego e indicadores socioeconómicos em Portugal, provenientes do INE ou PORDATA. Foram considerados dados trimestrais de diferentes indicadores: PIB real, proporção da população jovem (15-24 anos), emprego no setor terciário e rendimento médio líquido.
+
+
+# Recolha e Organização de Dados:
+
+O primeiro passo consiste em recolher dados oficiais sobre a taxa de desemprego e indicadores socioeconómicos em Portugal, provenientes do INE ou PORDATA.
+Foram considerados dados trimestrais de diferentes indicadores: PIB real, proporção da população jovem (15-24 anos), emprego no setor terciário e rendimento médio líquido.
 
 Para começar, os dados são importados:
-```{r results='hide'}
-# Leitura dos Dados
-library(readxl)
-dados <- read_excel("Base_Dados_Final.xlsx")
 
-#Inverter a Ordem dos dados do menor para o maior
-dados <- dados %>%
-  arrange(desc(row_number())) %>%  # inverte a ordem das linhas
-  mutate(Trimestre = row_number())  # cria índice sequencial do mais antigo para o mais recente
+```{r results='hide'}
+# Leitura dos Dados (já tratados pelo helper_heavy.R)
+dados <- readRDS("dados_tratados.rds")
 
 # Visualizar primeiras linhas
 head(dados)
@@ -78,44 +137,72 @@ head(dados)
 na.fail(dados) #se correr é porque não há valores omissos
 ```
 
-## Descrição dos Dados
+A recolha foi inicialmente planeada para o período 2010–2024. Contudo, verificou-se a inexistência de séries trimestrais completas para algumas das variáveis independentes selecionadas, nomeadamente para o início do período. Face a esta limitação, o intervalo temporal foi restringido a 2011–2024, assegurando a disponibilidade integral e comparável de todos os indicadores utilizados no modelo.
 
-### Variável dependente - Taxa de desemprego 
-A variável dependente utilizada neste estudo é a **taxa de desemprego** em Portugal, medida trimestralmente pelo INE. A escolha desta variável justifica-se por ser um dos indicadores centrais do desempenho do mercado de trabalho e um reflexo direto das condições económicas e sociais do país.
+# Descrição dos Dados
 
-A taxa de desemprego responde rapidamente a alterações na atividade económica, à evolução dos diferentes setores produtivos, às características da população ativa e aos choques económicos, como recessões ou crises sanitárias. Por estas razões, constitui uma medida adequada para analisar de que forma os principais fatores macroeconómicos e demográficos influenciam a procura de trabalho em Portugal.
+## Variável dependente - Taxa de desemprego
 
-### Variáveis independentes:
-A seleção das variáveis independentes teve como objetivo incluir fatores que captam tanto a conjuntura económica do país como características estruturais do mercado de trabalho. Cada variável foi escolhida por representar um determinante plausível e frequentemente referido na literatura económica como influenciador do desemprego.
+A variável dependente utilizada neste estudo é a **taxa de desemprego** em Portugal, medida trimestralmente pelo INE.
+A escolha desta variável justifica-se por ser um dos indicadores centrais do desempenho do mercado de trabalho e um reflexo direto das condições económicas e sociais do país.
 
-- **PIB real (em milhões de euros, por trimestre):** O Produto Interno Bruto real é um indicador fundamental da atividade económica. Períodos de crescimento do PIB tendem a estar associados à criação de emprego, enquanto fases de contração económica aumentam o risco de desemprego. Assim, o PIB real foi incluído para captar o efeito da conjuntura macroeconómica sobre o mercado de trabalho ao longo do tempo.
-- **Remuneração média mensal bruta:** A remuneração média reflete simultaneamente o rendimento dos trabalhadores e os custos laborais enfrentados pelas empresas. Salários mais elevados podem indicar um mercado de trabalho mais dinâmico e competitivo, mas também podem representar maiores custos de contratação. A inclusão desta variável permite captar a forma como estas dinâmicas influenciam o nível de emprego e, consequentemente, o desemprego.
-- **Percentagem de emprego no setor terciário:** O setor terciário representa a maior parte da estrutura económica portuguesa, abrangendo atividades como comércio, turismo e serviços. Alterações no peso relativo deste setor podem influenciar o desemprego devido à sua maior sensibilidade a flutuações económicas e choques externos. Esta variável permite captar possíveis mudanças estruturais na distribuição do emprego entre setores e o seu impacto no mercado de trabalho.
-- **Proporção de jovens na população ativa:** A presença de trabalhadores mais jovens na força de trabalho é relevante para a dinâmica do desemprego, uma vez que este grupo apresenta maior rotatividade, maior taxa de entrada no mercado de trabalho e maior vulnerabilidade a ciclos económicos. Assim, a proporção de jovens (15–24 anos) na população ativa foi incluída para medir o impacto da composição etária da força laboral sobre a evolução do desemprego.
+A taxa de desemprego responde rapidamente a alterações na atividade económica, à evolução dos diferentes setores produtivos, às características da população ativa e aos choques económicos, como recessões ou crises sanitárias.
+Por estas razões, constitui uma medida adequada para analisar de que forma os principais fatores macroeconómicos e demográficos influenciam a procura de trabalho em Portugal.
+
+## Variáveis independentes:
+
+A seleção das variáveis independentes teve como objetivo incluir fatores que captam tanto a conjuntura económica do país como características estruturais do mercado de trabalho.
+Cada variável foi escolhida por representar um determinante plausível e frequentemente referido na literatura económica como influenciador do desemprego.
+
+-   **PIB real (em milhões de euros, por trimestre):** O Produto Interno Bruto real é um indicador fundamental da atividade económica. Períodos de crescimento do PIB tendem a estar associados à criação de emprego, enquanto fases de contração económica aumentam o risco de desemprego. Assim, o PIB real foi incluído para captar o efeito da conjuntura macroeconómica sobre o mercado de trabalho ao longo do tempo.
+-   **Remuneração média mensal líquida:** A remuneração média mensal líquida reflete o rendimento efetivo recebido pelos trabalhadores após dedução das contribuições obrigatórias, constituindo um indicador direto do poder de compra da população empregada. Variações nesta variável podem influenciar a dinâmica do mercado de trabalho, uma vez que aumentos salariais elevam o rendimento disponível das famílias e podem estimular a procura agregada. Simultaneamente, remunerações mais elevadas podem sinalizar condições económicas favoráveis e maior competitividade no mercado laboral, estando frequentemente associadas a menores níveis de desemprego.
+-   **Percentagem de emprego no setor terciário:** O setor terciário representa a maior parte da estrutura económica portuguesa, abrangendo atividades como comércio, turismo e serviços. Alterações no peso relativo deste setor podem influenciar o desemprego devido à sua maior sensibilidade a flutuações económicas e choques externos. Esta variável permite captar possíveis mudanças estruturais na distribuição do emprego entre setores e o seu impacto no mercado de trabalho.
+-   **Proporção de jovens na população ativa:** A presença de trabalhadores mais jovens na força de trabalho é relevante para a dinâmica do desemprego, uma vez que este grupo apresenta maior rotatividade, maior taxa de entrada no mercado de trabalho e maior vulnerabilidade a ciclos económicos. Assim, a proporção de jovens (15–24 anos) na população ativa foi incluída para medir o impacto da composição etária da força laboral sobre a evolução do desemprego.
 
 
-## Análise Exploratória dos Dados
+
+# Análise Exploratória dos Dados
+
 Antes da construção do modelo estatístico, é essencial realizar uma análise exploratória dos dados, para compreender o comportamento das variáveis ao longo do tempo, identificar padrões e tendências, e avaliar a consistência das séries, detetando valores atípicos ou comportamentos inesperados.
 
 Nesta secção, a análise exploratória foca-se na evolução temporal da taxa de desemprego e das variáveis explicativas selecionadas, examinando tendências gerais, picos ou quebras associados a instabilidades económicas, bem como relações simples entre variáveis, através de correlações e gráficos, fornecendo uma primeira visão das associações que serão estudadas formalmente no modelo bayesiano.
 
-```{r}
+```{r, echo=FALSE}
 library(fBasics)
-basicStats(dados %>% select(-Período, -Trimestre))
+
+# Estatísticas descritivas completas
+stats <- basicStats(dados %>% select(-Período, -Trimestre))
+
+# Ficar só com o essencial para caber bem na página
+stats_sel <- stats[c("nobs", "Mean", "Stdev", "Minimum", "Maximum"), ]
+
+# Transpor: variáveis em linhas, estatísticas em colunas
+stats_t <- t(round(stats_sel, 2))
+
+knitr::kable(
+  stats_t,
+  caption = "Estatísticas descritivas principais das variáveis",
+  col.names = c("n", "Média", "Desvio-padrão", "Mínimo", "Máximo"),
+  digits = 2,
+  align = "lrrrr"
+)
 ```
 
 
-### Séries temporais de Cada Variável
+
+
+## Séries temporais de Cada Variável
 
 ```{r results='hide'}
 ## Gráficos de linha ao longo do tempo (Série Temporal)
 library(ggplot2)
 ```
 
-#### Evolução Temporal das Variáveis Independentes
+### Evolução Temporal das Variáveis Independentes
+
 Estas séries permitem observar como cada indicador evoluiu ao longo do período analisado e ajudam a compreender o seu possível impacto na taxa de desemprego.
 
-##### **Variável "PIB_real":**
+#### **Variável "PIB_real":**
 
 ```{r fig1, echo=FALSE, fig.cap="Série Temporal do PIB Real"}
 # PIB Real ao longo do tempo
@@ -126,14 +213,12 @@ ggplot(dados, aes(x = Trimestre, y = PIB_real)) +
   theme_minimal()
 ```
 
-O PIB real apresenta três fases bem definidas:
-- Declínio inicial (trimestres 1–8), coincidente com a crise económica e o período de austeridade.
+O PIB real apresenta três fases bem definidas: - Declínio inicial (trimestres 1–8), coincidente com a crise económica e o período de austeridade.
 - Recuperação gradual e sustentada até 2019, com crescimento contínuo.
 - Queda abrupta em 2020, resultante do impacto da pandemia COVID-19, seguida de uma forte recuperação nos trimestres posteriores.
 Esta série mostra claramente a sensibilidade da economia portuguesa aos ciclos económicos e aos choques externos.
 
-
-##### **Variável "Proporção_15_24":**
+#### **Variável "Proporção_15_24":**
 
 ```{r fig2, echo=FALSE, fig.cap="Série Temporal da Proporção da População entre 15-24 Anos"}
 # Proporção da população 15-24 anos
@@ -144,12 +229,12 @@ ggplot(dados, aes(x = Trimestre, y = Proporção_15_24)) +
   theme_minimal()
 ```
 
-A proporção de jovens na força de trabalho apresenta uma tendência maioritariamente decrescente:
-- Os valores iniciais situam-se perto dos 9%.
+A proporção de jovens na força de trabalho apresenta uma tendência maioritariamente decrescente: - Os valores iniciais situam-se perto dos 9%.
 - Ao longo do período, observa-se uma redução progressiva até níveis próximos de 6%.
-Este padrão é consistente com fenómenos demográficos como o envelhecimento populacional, menor natalidade e migração jovem para o exterior. A ligeira recuperação final sugere um aumento recente da participação jovem no mercado de trabalho.
+Este padrão é consistente com fenómenos demográficos como o envelhecimento populacional, menor natalidade e migração jovem para o exterior.
+A ligeira recuperação final sugere um aumento recente da participação jovem no mercado de trabalho.
 
-###### **Variável "Emprego_Terciario":**
+#### **Variável "Emprego_Terciario":**
 
 ```{r fig3, echo=FALSE, fig.cap="Série Temporal do Emprego no Setor Terciário"}
 # Emprego no setor terciário
@@ -166,7 +251,7 @@ A proporção de trabalhadores no setor terciário mostra uma tendência clarame
 
 Este comportamento reflete a crescente importância dos serviços — como turismo, comércio e atividades especializadas — na estrutura produtiva portuguesa.
 
-##### **Variável "Rendimento_medio_liquido":**
+#### **Variável "Rendimento_medio_liquido":**
 
 ```{r fig4, echo=FALSE, fig.cap="Série Temporal do Rendimento Médio Líquido"}
 # Rendimento médio líquido
@@ -177,13 +262,11 @@ ggplot(dados, aes(x = Trimestre, y = Rendimento_medio_liquido)) +
   theme_minimal()
 ```
 
-A remuneração média líquida evidencia uma tendência crescente bastante marcada:
-- No início do período, os valores situavam-se abaixo dos 850 €.
+A remuneração média líquida evidencia uma tendência crescente bastante marcada: - No início do período, os valores situavam-se abaixo dos 850 €.
 - A partir de meados da série, o crescimento torna-se mais acentuado, ultrapassando os 1100 € nos últimos trimestres.
 Este aumento pode refletir fatores como melhoria salarial gradual, políticas de valorização do rendimento do trabalho e evolução positiva do mercado laboral.
 
-
-#### Evolução da Variável Dependente: Taxa de Desemprego
+### Evolução da Variável Dependente: Taxa de Desemprego
 
 ```{r fig5, echo=FALSE, fig.cap="Série Temporal da Taxa de Desemprego"}
 # Taxa de desemprego
@@ -197,25 +280,27 @@ ggplot(dados, aes(x = Trimestre, y = Taxa_Desemprego)) +
 
 O gráfico da taxa de desemprego mostra uma trajetória muito clara, composta por três momentos principais:
 
-##### 1. Subida significativa (2011–2013):
-- A taxa de desemprego sobe rapidamente de cerca de 12% para valores superiores a 17%–18%.
-- Este pico coincide com a crise económica, o período de resgate financeiro e a forte contração do mercado de trabalho.
+#### 1. Subida significativa (2011–2013):
 
-##### 2. Queda contínua e expressiva (2014–2019):
-- Por volta do trimestre 12 (4º trimestre de 2013), observa-se uma descida quase ininterrupta.
-- O desemprego recua para valores abaixo de 7%.
-Este período acompanha a recuperação económica, o aumento do investimento e a melhoria das condições do mercado laboral.
+-   A taxa de desemprego sobe rapidamente de cerca de 12% para valores superiores a 17%–18%.
+-   Este pico coincide com a crise económica, o período de resgate financeiro e a forte contração do mercado de trabalho.
 
-##### 3. Choque da pandemia e estabilização (2020–2024)
-- Verifica-se um pequeno aumento em 2020, mas muito inferior ao observado em 2011–2013.
-- Após essa oscilação, a taxa estabiliza entre 6% e 8%, com pequenas variações individuais por trimestre.
+#### 2. Queda contínua e expressiva (2014–2019):
+
+-   Por volta do trimestre 12 (4º trimestre de 2013), observa-se uma descida quase ininterrupta.
+-   O desemprego recua para valores abaixo de 7%. Este período acompanha a recuperação económica, o aumento do investimento e a melhoria das condições do mercado laboral.
+
+#### 3. Choque da pandemia e estabilização (2020–2024)
+
+-   Verifica-se um pequeno aumento em 2020, mas muito inferior ao observado em 2011–2013.
+-   Após essa oscilação, a taxa estabiliza entre 6% e 8%, com pequenas variações individuais por trimestre.
 
 Este comportamento destaca a resiliência do mercado de trabalho português no pós-pandemia, apoiado por políticas de manutenção do emprego.
 
+## Correlação
 
-### Correlação
-
-A matriz de correlação permite observar a direção e a intensidade das relações lineares entre a taxa de desemprego e cada uma das variáveis explicativas. Embora a correlação não estabeleça causalidade, fornece uma primeira indicação sobre quais variáveis podem ter maior influência na evolução do desemprego e sobre a coerência das relações observadas nos gráficos temporais.
+A matriz de correlação permite observar a direção e a intensidade das relações lineares entre a taxa de desemprego e cada uma das variáveis explicativas.
+Embora a correlação não estabeleça causalidade, fornece uma primeira indicação sobre quais variáveis podem ter maior influência na evolução do desemprego e sobre a coerência das relações observadas nos gráficos temporais.
 
 ```{r fig6, echo=FALSE, fig.cap="Gráfico de Correlação"}
 
@@ -228,70 +313,86 @@ corrplot(cor(dados %>% select(-Período, -Trimestre)), method = "circle", type =
 
 ```
 
-#### Taxa de desemprego e PIB real — correlação negativa
-A correlação entre o PIB real e a taxa de desemprego é negativa, refletindo que:
-- Quando o PIB aumenta, o desemprego tende a diminuir.
+### Taxa de desemprego e PIB real — correlação negativa
+
+A correlação entre o PIB real e a taxa de desemprego é negativa, refletindo que: - Quando o PIB aumenta, o desemprego tende a diminuir.
 - Esta relação é consistente com a teoria económica: maior atividade económica promove criação de emprego.
 
-#### Taxa de desemprego e rendimento médio — correlação negativa
-O rendimento médio apresenta uma correlação negativa com o desemprego, indicando que:
-- Em períodos de menor desemprego, o rendimento do trabalho tende a crescer.
+### Taxa de desemprego e rendimento médio — correlação negativa
+
+O rendimento médio apresenta uma correlação negativa com o desemprego, indicando que: - Em períodos de menor desemprego, o rendimento do trabalho tende a crescer.
 - Isto reflete a melhoria do mercado laboral e maior competitividade salarial.
 A relação, embora lógica, pode não ser muito forte devido à evolução gradual dos salários ao longo do período.
 
-#### Taxa de desemprego e percentagem de emprego no setor terciário — correlação tendencialmente negativa
-A proporção de emprego no setor terciário tende a aumentar ao longo do período, enquanto o desemprego diminui, o que resulta numa correlação negativa:
-- Economias mais terciarizadas e orientadas para serviços tendem a absorver mais mão-de-obra.
+### Taxa de desemprego e percentagem de emprego no setor terciário — correlação tendencialmente negativa
+
+A proporção de emprego no setor terciário tende a aumentar ao longo do período, enquanto o desemprego diminui, o que resulta numa correlação negativa: - Economias mais terciarizadas e orientadas para serviços tendem a absorver mais mão-de-obra.
 - O setor dos serviços, particularmente turismo e comércio, tem forte influência no emprego em Portugal.
 
-#### Taxa de desemprego e proporção de jovens na população ativa — correlação positiva
-A proporção de jovens apresenta uma correlação positiva com o desemprego:
-- Populações mais jovens têm maior rotatividade laboral e maior taxa de entrada no mercado de trabalho.
+### Taxa de desemprego e proporção de jovens na população ativa — correlação positiva
+
+A proporção de jovens apresenta uma correlação positiva com o desemprego: - Populações mais jovens têm maior rotatividade laboral e maior taxa de entrada no mercado de trabalho.
 - Os jovens são historicamente mais vulneráveis a choques económicos e apresentam taxas de desemprego superiores ao total da população ativa.
 Esta relação confirma que mudanças demográficas podem influenciar significativamente a dinâmica do desemprego.
 
+# Implementação do Modelo de Regressão Linear Múltipla Bayesiana
 
-## Implementação do Modelo de Regressão Linear Múltipla Bayesiana
+## Especificação do Modelo Bayesiano
 
-#### Especificação do Modelo Bayesiano
-Tendo em conta o objetivo de estudar de que forma diferentes fatores socioeconómicos influenciam a taxa de desemprego em Portugal, recorreu-se a um modelo de regressão linear múltipla em enquadramento bayesiano, que serve para diagnostico preliminar. Este tipo de modelo permite quantificar o efeito médio de cada variável explicativa na variável dependente enquanto incorpora, de forma explícita, a incerteza associada às estimativas dos parâmetros.
+Tendo em conta o objetivo de estudar de que forma diferentes fatores socioeconómicos influenciam a taxa de desemprego em Portugal, recorreu-se a um modelo de regressão linear múltipla em enquadramento bayesiano, que serve para diagnostico preliminar.
+Este tipo de modelo permite quantificar o efeito médio de cada variável explicativa na variável dependente enquanto incorpora, de forma explícita, a incerteza associada às estimativas dos parâmetros.
 
 No nosso caso, especificou-se o seguinte modelo:
 
-$$
-Taxa\_Desemprego_t = \beta_0 + \beta_1(PIB\_Real_t) + \beta_2(Proporção\_15\_24_t) + \beta_3(Emprego\_Terciário_t)\\ 
-+ \beta_4(Rendimento\_Médio\_Líquido_t) + \varepsilon_t
-$$
+\[
+\begin{aligned}
+Taxa\_Desemprego_t
+&= \beta_0 
+   + \beta_1\, PIB\_Real_t
+   + \beta_2\, Proporcao\_{15\_24,t} \\
+&\quad + \beta_3\, Emprego\_Terciario_t
+   + \beta_4\, Rendimento\_Medio\_Liquido_t
+   + \varepsilon_t
+\end{aligned}
+\]
 
-,onde
+onde:
 
-- $\beta_0$ representa o intercepto,
-- $\beta_i$representam os efeitos das variáveis explicativas,
-- $ \varepsilon_t \sim N(0,\sigma))$ representa o erro aleatório.
+- $\beta_0$ representa o intercepto;
+- $\beta_i$ representam os efeitos das variáveis explicativas;
+- $\varepsilon_t \sim N(0,\sigma^2)$ representa o erro aleatório.
 
-Uma etapa crucial consiste em determinar a distribuição adequada para modelar esta variável. Apesar de a taxa de desemprego ser uma proporção, observamos que os valores trimestrais apresentam comportamento contínuo e relativamente simétrico, sem se aproximarem de 0% ou 100%. Além disso, as variações entre trimestres são moderadas, a volatilidade é baixa e não se observam caudas pesadas ou assimetrias significativas. Essas características tornam a distribuição Normal uma escolha apropriada, pois ela descreve de forma adequada variáveis contínuas, simétricas e com dispersão moderada.
+
+Uma etapa crucial consiste em determinar a distribuição adequada para modelar esta variável.
+Apesar de a taxa de desemprego ser uma proporção, observamos que os valores trimestrais apresentam comportamento contínuo e relativamente simétrico, sem se aproximarem de 0% ou 100%.
+Além disso, as variações entre trimestres são moderadas, a volatilidade é baixa e não se observam caudas pesadas ou assimetrias significativas.
+Essas características tornam a distribuição Normal uma escolha apropriada, pois ela descreve de forma adequada variáveis contínuas, simétricas e com dispersão moderada.
 
 Portanto, assumimos que:
 
-$$
-Taxa\_Desemprego_t|\beta, \mu,\sigma \sim N(\mu,\sigma^2)
-$$
+\[
+Taxa\_Desemprego_t \mid \beta, \mu, \sigma \sim N(\mu, \sigma^2)
+\]
 
-,onde $\mu $representa a média da taxa de desemprego e $\sigma^2 $ a sua variância. Esta suposição permite-nos aplicar modelos de regressão clássicos e realizar inferência estatística de forma consistente e interpretável.
+onde $\mu$ representa a média da taxa de desemprego e $\sigma^2$ a sua variância.
+Esta suposição permite-nos aplicar modelos de regressão clássicos e realizar inferência estatística de forma consistente e interpretável.
 
-#### Especificação das Prioris
+
+## Especificação das Prioris
 
 Optamos por prioris não informativos (ou fracamente informativos), que exercem pouca influência na distribuição a posteriori, permitindo que os dados dominem a inferência, ao mesmo tempo que evitam estimativas extremas, garantindo que o modelo aprenda essencialmente a partir dos dados.
 
-- **Para os coeficientes da regressão:**  $\beta_i \sim N(0,1)$. Esta escolha traduz a crença de que os efeitos devem ser moderados, mas não impede que os dados revelem efeitos mais fortes.
+-   **Para os coeficientes da regressão:** $\beta_i \sim N(0,1)$.
+    Esta escolha traduz a crença de que os efeitos devem ser moderados, mas não impede que os dados revelem efeitos mais fortes.
 
-- **Para o intercepto:** $\beta_0 \sim N(\mu_y{},3)$, centrado na média observada da taxa de desemprego, permitindo flexibilidade adequada.
+-   **Para o intercepto:** $\beta_0 \sim N(\mu_y{},3)$, centrado na média observada da taxa de desemprego, permitindo flexibilidade adequada.
 
-- **Para a variabilidade dos erros:** $\sigma \sim Half-Student_t(3,0,2)$ Uma priori robusta, adequada quando se pretende evitar subestimação da variância residual.
+-   **Para a variabilidade dos erros:** $\sigma \sim Half-Student_t(3,0,2)$ Uma priori robusta, adequada quando se pretende evitar subestimação da variância residual.
 
 Estas escolhas permitem um modelo estável, interpretável e coerente com a natureza das séries económicas utilizadas.
 
-Precisamos especificar modelos a priori para cada uma das variáveis. Para isso, utilizaremos a estrutura padrão de modelos a priori usada pelo pacote rstanarm:
+Precisamos especificar modelos a priori para cada uma das variáveis.
+Para isso, utilizaremos a estrutura padrão de modelos a priori usada pelo pacote rstanarm:
 
 ```{r results='hide'}
 # Calcular a média antes
@@ -307,38 +408,36 @@ prioris <- c(
 
 ```
 
-#### Ajuste do Modelo
-Após a especificação do modelo e a definição das prioris para os parâmetros, o próximo passo é realizar a inferência estatística, ou seja, ajustar o modelo através da amostragem MCMC. O código R utiliza a função <code>stan_glm</code> do pacote <code>rstanarm</code>, que usa o motor de inferência Stan para realizar esta amostragem.
+## Ajuste do Modelo
 
-```{r results='hide'}
-# Ajustar o Modelo
+Após a especificação do modelo e a definição das prioris para os parâmetros, 
+o próximo passo é realizar a inferência estatística, ou seja, ajustar o modelo 
+através da amostragem MCMC. O código R utiliza a função `stan_glm` do pacote 
+`rstanarm`, que usa o motor de inferência Stan para realizar esta amostragem.
+
+```{r ajuste_modelo, echo=FALSE, message=FALSE, warning=FALSE}
 library(rstanarm)
-modelo_bayes <- stan_glm(
-  Taxa_Desemprego ~ PIB_real + Proporção_15_24 + Emprego_Terciario + Rendimento_medio_liquido,
-  data = dados,
-  family = gaussian(),
-  prior = normal(0,1),                             # priori para os betas
-  prior_intercept = normal(media_desemprego,3 ),   # prioir para intercepto
-  chains = 4,                                       
-  iter = 4000,                       
-  warmup = 1000,                     
-  seed = 123
+modelo_bayes <- readRDS("modelo_bayes.rds")
+```
+
+
+```{r resumo_pequeno, echo=FALSE}
+library(broom.mixed)
+resumo_fixos <- tidy(modelo_bayes, effects = "fixed", conf.int = TRUE)
+knitr::kable(
+  resumo_fixos[, c("term","estimate","conf.low","conf.high")],
+  digits = 3,
+  caption = "Parâmetros do modelo bayesiano (efeitos fixos)."
 )
+
 ```
 
-```{r}
-summary(modelo_bayes)
-```
-```{r}
-first_set <- head(modelo_bayes, 1)
-first_set
-```
+# Diagnóstico de Convergência (R-hat e ESS)
 
-## Diagnóstico de Convergência (R-hat e ESS)
+A inferência Bayesiana MCMC requer um diagnóstico rigoroso para garantir que as cadeias simuladas convergiram para a verdadeira distribuição a posteriori.
+Dois indicadores principais são utilizados:
 
-A inferência Bayesiana MCMC requer um diagnóstico rigoroso para garantir que as cadeias simuladas convergiram para a verdadeira distribuição a posteriori. Dois indicadores principais são utilizados:
-
-- **Fator de Escala Potencial ($\hat{R}$ ou Rhat):** O valor de $\hat{R}$ compara a variação dentro de cada cadeia com a variação entre todas as cadeias.
+-   **Fator de Escala Potencial (**$\hat{R}$ ou Rhat): O valor de $\hat{R}$ compara a variação dentro de cada cadeia com a variação entre todas as cadeias.
 
 ```{r fig7, echo=FALSE, fig.cap="Gráfico de R-hat"}
 bayesplot::rhat(modelo_bayes)
@@ -346,8 +445,8 @@ mcmc_rhat(bayesplot::rhat(modelo_bayes))
 ```
 
 Como todos os valores obtidos estão abaixo do limite de 1.05, consideramos que as 4 cadeias MCMC se misturaram bem e convergiram para uma mesma distribuição a posteriori.
- 
-- **Razão do Tamanho Efetivo da Amostra (Neff Ratio):** Este rácio avalia a eficiência da amostragem, medindo quantos sorteios independentes os sorteios MCMC equivalem. Uma razão próxima de 1 é ideal, e valores acima de 0.1 são aceitáveis.
+
+-   **Razão do Tamanho Efetivo da Amostra (Neff Ratio):** Este rácio avalia a eficiência da amostragem, medindo quantos sorteios independentes os sorteios MCMC equivalem. Uma razão próxima de 1 é ideal, e valores acima de 0.1 são aceitáveis.
 
 ```{r fig8, echo=FALSE, fig.cap="Gráfico de Neff Ratio"}
 neff_ratio(modelo_bayes)
@@ -356,8 +455,12 @@ mcmc_neff(neff_ratio(modelo_bayes))
 
 O nosso rácio eficaz de amostras (neff_ratio) é satisfatório para todos os parâmetros, indicando que obtivemos um número suficiente de amostras não correlacionadas para estimar as médias a posteriori de forma fiável.
 
-## Posteriori
-Após ajustar o modelo bayesiano, procedemos à estimação dos parâmetros via MCMC. Aqui apresentamos os resultados das distribuições a posteriori, permitindo não só obter os valores médios de cada variável explicativa (estimativas pontuais), mas também quantificar a incerteza associada a essas estimativas. 
+
+# Posteriori
+
+Após ajustar o modelo bayesiano, procedemos à estimação dos parâmetros via MCMC.
+Aqui apresentamos os resultados das distribuições a posteriori, permitindo não só obter os valores médios de cada variável explicativa (estimativas pontuais), mas também quantificar a incerteza associada a essas estimativas.
+
 ```{r}
 # Posterior summary statistics
 library(broom.mixed)
@@ -366,19 +469,30 @@ tidy(modelo_bayes, effects = c("fixed", "aux"), conf.int = TRUE)
 
 Esta análise conecta o modelo teórico previamente especificado com os valores observados nos dados, oferecendo uma interpretação quantitativa das relações económicas estudadas:
 
-$$
+\[
+\begin{aligned}
+\widehat{Desemprego}_t
+&= 108.6091
+ - 4.768032\times 10^{-4}\, PIBReal_t \\
+&\quad + 4.005751\times 10^{-2}\, Proporcao_{15\_24,t} \\
+&\quad - 9.562027\times 10^{-1}\, EmpregoTerciario_t \\
+&\quad - 5.296195\times 10^{-3}\, RendimentoMedioLiquido_t
+\end{aligned}
+\]
 
-(1.086091e+02) - (4.768032e-04)(PIB\_Real_t) + (4.005751e-02)(Proporção\_15\_24_t) + (-9.562027e-01)(Emprego\_Terciário_t)\\ 
-- (5.296195e-03)(Rendimento\_Médio\_Líquido_t)
-$$
 
-A mediana posterior dos coeficientes sugere que o emprego no setor terciário exerce um efeito negativo consistente sobre a taxa de desemprego, ou seja, um aumento relativo no emprego terciário está associado a uma redução da taxa de desemprego. Por outro lado, o PIB real e o rendimento médio líquido apresentam coeficientes próximos de zero, indicando pouca influência direta trimestral sobre o desemprego. A proporção da população jovem (15-24 anos) apresenta um efeito positivo pequeno, sugerindo que aumentos nesta faixa etária podem contribuir para uma ligeira subida da taxa de desemprego.
+
+A mediana posterior dos coeficientes sugere que o emprego no setor terciário exerce um efeito negativo consistente sobre a taxa de desemprego, ou seja, um aumento relativo no emprego terciário está associado a uma redução da taxa de desemprego.
+Por outro lado, o PIB real e o rendimento médio líquido apresentam coeficientes próximos de zero, indicando pouca influência direta trimestral sobre o desemprego.
+A proporção da população jovem (15-24 anos) apresenta um efeito positivo pequeno, sugerindo que aumentos nesta faixa etária podem contribuir para uma ligeira subida da taxa de desemprego.
 
 Estas estatísticas permitem interpretar de forma mais robusta os efeitos médios de cada variável, considerando explicitamente a incerteza da estimativa, o que é uma das vantagens centrais da abordagem bayesiana.
 
+# Previsões Posteriori
 
-## Previsões Posteriori
-Com os parâmetros estimados pelo modelo bayesiano, é possível gerar previsões da taxa de desemprego para os períodos observados, incorporando a incerteza das estimativas. Utilizando as amostras MCMC, calculamos tanto as previsões pontuais (média das amostras) quanto os intervalos de credibilidade a 95%, que indicam a faixa de valores mais prováveis para cada trimestre.
+Com os parâmetros estimados pelo modelo bayesiano, é possível gerar previsões da taxa de desemprego para os períodos observados, incorporando a incerteza das estimativas.
+Utilizando as amostras MCMC, calculamos tanto as previsões pontuais (média das amostras) quanto os intervalos de credibilidade a 95%, que indicam a faixa de valores mais prováveis para cada trimestre.
+
 ```{r}
 #Previsões pontuais (média das amostras MCMC)
 previsoes <- posterior_predict(modelo_bayes, dados) 
@@ -397,8 +511,37 @@ plot(prediction_mean, type = "b", col = "pink", pch = 20,
  col = c("pink", "violet"), lty = 1, pch = c(20, 21))
 ```
 
-O gráfico comparativo entre os valores previstos e os dados observados permite avaliar visualmente o ajuste do modelo. Observa-se que o modelo consegue reproduzir bem o padrão temporal da taxa de desemprego, embora pequenas discrepâncias possam surgir em períodos de maior volatilidade ou choques econômicos não capturados pelos regressores.
+O gráfico comparativo entre os valores previstos e os dados observados permite avaliar visualmente o ajuste do modelo.
+Observa-se que o modelo consegue reproduzir bem o padrão temporal da taxa de desemprego, embora pequenas discrepâncias possam surgir em períodos de maior volatilidade ou choques econômicos não capturados pelos regressores.
 
-## Conclusão
+\clearpage
 
-escrever
+# Conclusões
+
+O objetivo deste trabalho foi aplicar a abordagem bayesiana ao estudo da taxa de desemprego em Portugal entre 2011 e 2024, utilizando dados trimestrais provenientes do INE/PORDATA. A análise exploratória identificou três fases distintas na evolução da taxa de desemprego: um aumento pronunciado durante o período de crise económica, seguido de uma redução contínua a partir de 2013 e de uma relativa estabilização após o choque associado à pandemia de COVID-19.
+
+O modelo de regressão linear múltipla bayesiana permitiu quantificar a influência dos principais fatores socioeconómicos considerados. Os resultados sugerem que a estrutura setorial do emprego desempenha um papel determinante: aumentos na proporção de emprego no setor terciário associam-se a reduções significativas na taxa de desemprego ao longo do período analisado. Em contraste, o PIB real e o rendimento médio líquido apresentam efeitos estimados de baixa magnitude quando incluídos simultaneamente no modelo, indicando que o seu impacto trimestral direto sobre o desemprego é limitado no horizonte estudado. A proporção de jovens na população ativa mostra um efeito positivo reduzido, compatível com a maior vulnerabilidade deste grupo etário às flutuações do mercado laboral.
+
+As previsões obtidas a partir do modelo reproduzem adequadamente o comportamento observado da taxa de desemprego, captando a sua trajetória global e refletindo as principais mudanças no ciclo económico. Persistem, contudo, limitações inerentes ao enquadramento adotado: a relação entre variáveis é assumida linear, a dependência temporal não é modelada explicitamente e fatores como políticas públicas, choques externos adicionais ou alterações estruturais profundas não são incorporados.
+
+Apesar destas restrições, os resultados evidenciam a utilidade da inferência bayesiana na análise de fenómenos económicos reais, permitindo integrar informação prévia, quantificar incerteza e interpretar estimativas de forma probabilística. O enquadramento desenvolvido constitui uma base sólida para extensões futuras, nomeadamente através da inclusão de modelos dinâmicos, especificações não lineares ou novas variáveis explicativas que aprofundem a compreensão das dinâmicas do mercado de trabalho português.
+
+
+# Referências
+
+**INE – Taxa de desemprego**\
+[1] Instituto Nacional de Estatística (INE), *Taxa de desemprego (Série 2021 - %) por Local de residência (NUTS - 2024) e Sexo; Trimestral – Inquérito ao Emprego (Série 2021)*,\
+<https://www.ine.pt/xportal/xmain?xpid=INE&xpgid=ine_indicadores&contecto=pi&indOcorrCod=0012136&selTab=tab0> (acesso em 07-dez-2025)
+
+**INE – Produto Interno Bruto real**\
+[2] Instituto Nacional de Estatística (INE), *Produto interno bruto dados encadeados em volume (B.1\*g) (Base 2021 - €); Trimestral – Contas nacionais trimestrais*,\
+<https://www.ine.pt/xportal/xmain?xpid=INE&xpgid=ine_indicadores&indOcorrCod=0013430&contexto=bd&selTab=tab2> (acesso em 07-dez-2025)
+
+**INE – Rendimento médio mensal líquido** [3] Instituto Nacional de Estatística (INE), *Rendimento médio mensal líquido (Série 2021 - €) da população empregada por conta de outrem por Local de residência (NUTS - 2024) e Setor de atividade económica (CAE Rev. 3); Trimestral – Inquérito ao Emprego (Série 2021)*,\
+<https://www.ine.pt/xportal/xmain?xpid=INE&xpgid=ine_indicadores&indOcorrCod=0012134&contexto=bd&selTab=tab2> (acesso em 07-dez-2025)
+
+**INE – Emprego no setor terciário** [4] Instituto Nacional de Estatística (INE), *Proporção de população empregada no setor terciário (Série 2021, CAE Rev. 3 - %) por Local de residência (NUTS - 2024); Anual – Inquérito ao Emprego (Série 2021)*,\
+<https://www.ine.pt/xportal/xmain?xpid=INE&xpgid=ine_indicadores&indOcorrCod=0012206&contexto=bd&selTab=tab2> (acesso em 07-dez-2025)
+
+**INE – População ativa por grupos etários** [5] Instituto Nacional de Estatística (INE), *População ativa com idade entre 16 e 74 anos (N.º) por Grupo etário; Mensal – Estatísticas Mensais de Emprego e Desemprego com base no Inquérito ao Emprego*,\
+<https://www.ine.pt/xportal/xmain?xpid=INE&xpgid=ine_indicadores&indOcorrCod=0010057&contexto=bd&selTab=tab2> (acesso em 07-dez-2025)
